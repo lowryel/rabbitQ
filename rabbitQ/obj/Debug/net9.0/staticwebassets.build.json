@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "EFTsmxlhWSKoVK81Vw0bSQBB700Ujz0R93K1rj/S7/w=",
+  "Source": "rabbitQ",
+  "BasePath": "_content/rabbitQ",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

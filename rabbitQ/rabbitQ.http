@@ -1,0 +1,12 @@
+@rabbitQ_HostAddress = http://localhost:5164
+
+GET {{rabbitQ_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+# Test endpoint - only needs the recipient email
+POST /api/reminder/send-test-reminder
+Content-Type: application/json
+
+"ellowry09@gmail.com"
