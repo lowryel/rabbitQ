@@ -91,3 +91,4 @@ C:\Users\user\Documents\Dev\Backend\rabbitQ\rabbitQ\bin\Debug\net9.0\runtimes\wi
 C:\Users\user\Documents\Dev\Backend\rabbitQ\rabbitQ\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 C:\Users\user\Documents\Dev\Backend\rabbitQ\rabbitQ\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\user\Documents\Dev\Backend\rabbitQ\rabbitQ\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\user\Documents\Dev\Backend\rabbitQ\rabbitQ\obj\Debug\net9.0\rabbitQ.sourcelink.json

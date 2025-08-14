@@ -40,6 +40,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("EndOfMonthReminderTrigger")
+        // .WithCronSchedule("0 */5 * * * ?") // Run every 5 minutes
         .WithCronSchedule("0 0 9 L * ?") // 9 AM on last day of month
     );
 });

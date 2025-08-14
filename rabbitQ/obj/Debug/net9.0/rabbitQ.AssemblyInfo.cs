@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("rabbitQ")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85178219019f635a45029d6a1b244ce6f34c87f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("rabbitQ")]
 [assembly: System.Reflection.AssemblyTitleAttribute("rabbitQ")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

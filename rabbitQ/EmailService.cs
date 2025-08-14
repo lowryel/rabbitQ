@@ -29,39 +29,65 @@ public class EmailService(IOptions<EmailConfig> config, ILogger<EmailService> lo
 
     public async Task SendEmailAsync(EmailMessage message)
     {
+        using var smtp = new SmtpClient();
         try
         {
+            // Set shorter timeout (30 seconds)
+            smtp.Timeout = 30000;
+
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress(_config.FromName, _config.FromEmail));
             email.To.Add(new MailboxAddress("", message.To));
             email.Subject = message.Subject;
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Body };
 
-            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-            {
-                Text = message.Body
-            };
+            // Add cancellation token to prevent hanging
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            using var smtp = new SmtpClient();
-
-            // Choose connection type based on EnableSsl setting
             var secureSocketOptions = _config.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
-            await smtp.ConnectAsync(_config.SmtpServer, _config.SmtpPort, secureSocketOptions);
+            await smtp.ConnectAsync(_config.SmtpServer, _config.SmtpPort, secureSocketOptions, cts.Token);
 
-            // Only authenticate if username/password are provided
             if (!string.IsNullOrEmpty(_config.Username) && !string.IsNullOrEmpty(_config.Password))
             {
-                await smtp.AuthenticateAsync(_config.Username, _config.Password);
+                await smtp.AuthenticateAsync(_config.Username, _config.Password, cts.Token);
             }
 
-            await smtp.SendAsync(email);
-            await smtp.DisconnectAsync(true);
-
-            _logger.LogInformation($"Email sent successfully to {message.To}");
+            await smtp.SendAsync(email, cts.Token);
+            _logger.LogInformation("Email sent successfully to {EmailAddress}", message.To);
+        }
+        catch (OperationCanceledException ex)
+        {
+            _logger.LogWarning("Email sending timed out for {EmailAddress}: {Message}", message.To, ex.Message);
+            // Don't rethrow
+        }
+        catch (TimeoutException ex)
+        {
+            _logger.LogWarning("Email sending timed out for {EmailAddress}: {Message}", message.To, ex.Message);
+            // Don't rethrow
+        }
+        catch (SmtpCommandException ex) when (ex.StatusCode == SmtpStatusCode.MailboxUnavailable)
+        {
+            _logger.LogWarning("Email address does not exist: {EmailAddress}", message.To);
+            // Don't rethrow
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Failed to send email to {message.To}");
-            throw;
+            _logger.LogError(ex, "Unexpected error sending email to {EmailAddress}", message.To);
+            // Don't rethrow to keep the queue processing
+        }
+        finally
+        {
+            try
+            {
+                if (smtp.IsConnected)
+                {
+                    await smtp.DisconnectAsync(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Error disconnecting SMTP client: {Message}", ex.Message);
+            }
         }
     }
 }
